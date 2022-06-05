@@ -21,8 +21,8 @@ int backsw = 1;		// 화면전환 스위칭 값 EX) 0이면 MAIN화면이였다�
 int jump = 0;		// 1이면 점프 2이면 슬라이드 0이면 일반적인 달리기
 int count = 0;		// 0.1초마다 1씩증가하는 카운트(SetTimer(0,100,NULL)로 세팅했기 때문에 0.1초를 카운트 한다.)
 int sec = 0;		// 몇초인지 count를 10으로 나누면서 1씩증가
-int ObstacleSec = 0;
-int ObstacleCount = 0;
+int ObstacleSec = 0;// 장애물 이미지 출력 타이밍을 위한 시간
+int ObstacleCount = 0;//ObstacleSec을 알맞은 초로 카운팅 시키기 위한 카운트
 
 int Rbutton = 0;	// 왼쪽버튼 장애물 파괴 타이밍 배열 순서 설정
 int Lbutton = 0;	// 오른쪽버튼 장애물 파괴 타이밍 배열 순서 설정
@@ -141,8 +141,7 @@ void CrythmGameView::DrawBitmap()
 	dc.TextOutW(350, 0, str);
 	str2.Format(TEXT("점수 %d"), pDoc->score);
 	dc.TextOutW(350, 30, str2);
-	str3.Format(TEXT("2018219069 정성우"));
-	dc.TextOutW(10, 10, str3);
+	
 	
 	oldbmp = (CBitmap*)MemDC.SelectObject(&back);
 	dc.BitBlt(0, 0, 1400, 350, &MemDC, 1400, 350, SRCCOPY);

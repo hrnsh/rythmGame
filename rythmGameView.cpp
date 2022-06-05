@@ -21,14 +21,15 @@ int backsw = 1;		// 화면전환 스위칭 값 EX) 0이면 MAIN화면이였다�
 int jump = 0;		// 1이면 점프 2이면 슬라이드 0이면 일반적인 달리기
 int count = 0;		// 0.1초마다 1씩증가하는 카운트(SetTimer(0,100,NULL)로 세팅했기 때문에 0.1초를 카운트 한다.)
 int sec = 0;		// 몇초인지 count를 10으로 나누면서 1씩증가
-
-
+int ObstacleSec = 0;
+int ObstacleCount = 0;
 
 int Rbutton = 0;	// 왼쪽버튼 장애물 파괴 타이밍 배열 순서 설정
 int Lbutton = 0;	// 오른쪽버튼 장애물 파괴 타이밍 배열 순서 설정
 
 int Larray[10] = { 10,15,20,25,30,35,40,45,50,55 };	// 왼쪽 버튼 장애물파괴 타이밍
 int Rarray[10] = { 15,20,25,30,35,40,45,50,55,60 };	// 오른쪽 버튼 장애물파괴 타이밍
+
 
 // CrythmGameView
 
@@ -77,7 +78,6 @@ void CrythmGameView::OnDraw(CDC* pDC)
 	if (!pDoc)
 		return;
 	CClientDC dc(this);
-	CString str3;
 	CDC MemDC;
 
 	int c = 0;
@@ -87,24 +87,22 @@ void CrythmGameView::OnDraw(CDC* pDC)
 	bmpback.LoadBitmap(IDB_BACK);
 	mainback.LoadBitmap(IDB_MAINBACK);
 	mainUI.LoadBitmap(IDB_UITEST);
+
 	MemDC.CreateCompatibleDC(pDC);
 	
-	str3.Format(TEXT("2018219069 정성우"));
-	dc.TextOutW(10, 10, str3);
-
+	
 		if (backsw == 0) {
 			
 		Oldbmp = (CBitmap*)MemDC.SelectObject(&mainback);
 		pDC->BitBlt(0, 0, 1000, 350, &MemDC, 0, 0, SRCCOPY);
 		Oldbmp = (CBitmap*)MemDC.SelectObject(&mainUI);
-		pDC->StretchBlt(150, 250, 300, 150, &MemDC, 50, 60, 700, 350, SRCCOPY);
+		pDC->StretchBlt(250, 250, 300, 150, &MemDC, 50, 60, 700, 350, SRCCOPY);
 		
 		}
 		else if (backsw == 1) {
 
 		Oldbmp = (CBitmap*)MemDC.SelectObject(&bmpback);
 		pDC->BitBlt(0, 0, 1000, 350, &MemDC, 0, 0, SRCCOPY);
-		
 		
 		}
 		MemDC.SelectObject(&Oldbmp);
@@ -119,13 +117,15 @@ void CrythmGameView::DrawBitmap()
 	CClientDC dc(this);
 	static int nImage = 0;
 	static int nimages = 0;
+	int move = 700;
+	
 	// TODO: 여기에 구현 코드 추가.
 
 	if (backsw == 1) {
 	CClientDC dc(this);
 	CDC MemDC;
 	MemDC.CreateCompatibleDC(&dc);
-	CBitmap bmpman, seat, back,bmpback,Obf,Obl, bmpmanmask, * oldbmp;
+	CBitmap bmpman, seat, back,bmpback,Obf,Obl, bmpmanmask,Obstaclef,Obstaclel, * oldbmp;
 
 	bmpman.LoadBitmap(IDB_MANT3);
 	seat.LoadBitmap(IDB_SEAT);
@@ -133,20 +133,25 @@ void CrythmGameView::DrawBitmap()
 	Obf.LoadBitmap(IDB_OBSTACLEF);
 	Obl.LoadBitmap(IDB_OBSTACLEL);
 	bmpmanmask.LoadBitmap(IDB_MANT3M);
-	
+	Obstaclef.LoadBitmap(IDB_OBSTACLEF);
+	Obstaclel.LoadBitmap(IDB_OBSTACLEL);
 
-	CString str, str2;
+	CString str, str2, str3;
 	str.Format(TEXT("초 : %d"), sec);
 	dc.TextOutW(350, 0, str);
 	str2.Format(TEXT("점수 %d"), pDoc->score);
 	dc.TextOutW(350, 30, str2);
+	str3.Format(TEXT("2018219069 정성우"));
+	dc.TextOutW(10, 10, str3);
 	
 	oldbmp = (CBitmap*)MemDC.SelectObject(&back);
 	dc.BitBlt(0, 0, 1400, 350, &MemDC, 1400, 350, SRCCOPY);
 	oldbmp = (CBitmap*)MemDC.SelectObject(&seat);
 	dc.BitBlt(0, 300, 1000, 350, &MemDC, nimages * 5, 0, SRCCOPY);
-	
-
+	/*
+	oldbmp = (CBitmap*)MemDC.SelectObject(&Obstacle);
+	dc.StretchBlt(0, 0, 100, 90, &MemDC, 100, 40, 250, 200, SRCCOPY);
+	*/
 	
 	if (jump == 0) {
 	
@@ -172,6 +177,20 @@ void CrythmGameView::DrawBitmap()
 	else {
 
 	}
+
+	if (Larray[Lbutton] - 2 < sec && sec < Larray[Lbutton]+3) {
+
+	
+		
+		oldbmp = (CBitmap*)MemDC.SelectObject(&Obstaclef);
+		dc.StretchBlt(move - ObstacleCount * 10, 100, 50, 50, &MemDC, 100, 40, 250, 200, SRCCOPY);
+		oldbmp = (CBitmap*)MemDC.SelectObject(&back);
+		dc.BitBlt(move+50 - ObstacleCount * 10, 100, 10, 50, &MemDC, move + 50 - ObstacleCount * 10, 100, SRCCOPY);
+
+	}
+
+	
+	
 
 	nImage++;
 	nimages++;
@@ -251,6 +270,12 @@ void CrythmGameView::OnTimer(UINT_PTR nIDEvent)
 		DrawBitmap();
 		count++;
 		sec = count / 10;
+
+		if (Larray[Lbutton] - 5 < sec && sec < Larray[Lbutton]) {
+			ObstacleCount++;
+			ObstacleSec = ObstacleCount / 10;
+		}
+		
 	}
 	CView::OnTimer(nIDEvent);
 }

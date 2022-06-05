@@ -157,6 +157,8 @@ void CrythmGameView::DrawBitmap()
 	
 		oldbmp = (CBitmap*)MemDC.SelectObject(&back);
 		dc.BitBlt(10, 100, 100, 100, &MemDC, 10, 100, SRCCOPY);
+		oldbmp = (CBitmap*)MemDC.SelectObject(&back);
+		dc.BitBlt(10, 200, 100, 100, &MemDC, 10, 200, SRCCOPY);
 		oldbmp = (CBitmap*)MemDC.SelectObject(&bmpmanmask);
 		dc.StretchBlt(10, 200, 100, 100, &MemDC, 350 * nImage, 0, 350, 350, SRCAND);
 		oldbmp = (CBitmap*)MemDC.SelectObject(&bmpman);
@@ -168,6 +170,8 @@ void CrythmGameView::DrawBitmap()
 		
 		oldbmp = (CBitmap*)MemDC.SelectObject(&back);
 		dc.BitBlt(10, 200, 100, 100, &MemDC, 10, 200, SRCCOPY);
+		oldbmp = (CBitmap*)MemDC.SelectObject(&back);
+		dc.BitBlt(10, 100, 100, 100, &MemDC, 10, 100, SRCCOPY);
 		oldbmp = (CBitmap*)MemDC.SelectObject(&bmpmanmask);
 		dc.StretchBlt(10, 100, 100, 100, &MemDC, 350 * nImage, 0, 350, 350, SRCAND);
 		oldbmp = (CBitmap*)MemDC.SelectObject(&bmpman);

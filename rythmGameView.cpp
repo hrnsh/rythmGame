@@ -17,11 +17,10 @@
 #define new DEBUG_NEW
 #endif
 
-int backsw = 1;		// 화면전환 스위칭 값 EX) 0이면 MAIN화면이였다가 1이 되면 게임화면으로 변경
+int backsw = 0;		// 화면전환 스위칭 값 EX) 0이면 MAIN화면이였다가 1이 되면 게임화면으로 변경
 int jump = 0;		// 1이면 점프 2이면 슬라이드 0이면 일반적인 달리기
 int count = 0;		// 0.1초마다 1씩증가하는 카운트(SetTimer(0,100,NULL)로 세팅했기 때문에 0.1초를 카운트 한다.)
 int sec = 0;		// 몇초인지 count를 10으로 나누면서 1씩증가
-int ObstacleSec = 0;// 장애물 이미지 출력 타이밍을 위한 시간
 int ObstacleCount = 0;//ObstacleSec을 알맞은 초로 카운팅 시키기 위한 카운트
 
 int Rbutton = 0;	// 왼쪽버튼 장애물 파괴 타이밍 배열 순서 설정
@@ -181,14 +180,15 @@ void CrythmGameView::DrawBitmap()
 
 	}
 
-	if (Larray[Lbutton] - 2 < sec && sec < Larray[Lbutton]+3) {
+	if (Larray[Lbutton]-1  < sec && sec < Larray[Lbutton]+3) {
 
 	
-		
-		oldbmp = (CBitmap*)MemDC.SelectObject(&Obstaclef);
-		dc.StretchBlt(move - ObstacleCount * 10, 100, 50, 50, &MemDC, 100, 40, 250, 200, SRCCOPY);
 		oldbmp = (CBitmap*)MemDC.SelectObject(&back);
-		dc.BitBlt(move+50 - ObstacleCount * 10, 100, 10, 50, &MemDC, move + 50 - ObstacleCount * 10, 100, SRCCOPY);
+		dc.BitBlt(move + 50 - ObstacleCount * 20, 100, 20, 50, &MemDC, move + 50 - ObstacleCount * 20, 100, SRCCOPY);
+		oldbmp = (CBitmap*)MemDC.SelectObject(&Obstaclef);
+		dc.StretchBlt(move - ObstacleCount * 20, 100, 50, 50, &MemDC, 100, 40, 250, 200, SRCCOPY);
+		oldbmp = (CBitmap*)MemDC.SelectObject(&back);
+		dc.BitBlt(move+50 - ObstacleCount * 20, 100, 20, 50, &MemDC, move + 50 - ObstacleCount * 20, 100, SRCCOPY);
 
 	}
 
@@ -274,9 +274,11 @@ void CrythmGameView::OnTimer(UINT_PTR nIDEvent)
 		count++;
 		sec = count / 10;
 
-		if (Larray[Lbutton] - 5 < sec && sec < Larray[Lbutton]) {
+		if (Larray[Lbutton]-1 < sec && sec < Larray[Lbutton]+3) {
 			ObstacleCount++;
-			ObstacleSec = ObstacleCount / 10;
+		}
+		else {
+			ObstacleCount = 0;
 		}
 		
 	}
@@ -360,7 +362,7 @@ void CrythmGameView::OnRButtonUp(UINT nFlags, CPoint point)
 void CrythmGameView::RScoreCount()
 {
 	CrythmGameDoc* pDoc = GetDocument();
-	if (Rarray[Rbutton] < sec && sec<Rarray[Rbutton] + 2)
+	if (Rarray[Rbutton]+2 < sec && sec<Rarray[Rbutton] + +4)
 	{
 		pDoc->score++;
 		Rbutton++;
@@ -380,7 +382,7 @@ void CrythmGameView::LScoreCount()
 {
 	CrythmGameDoc* pDoc = GetDocument();
 	// TODO: 여기에 구현 코드 추가.
-	if (Larray[Lbutton] < sec && sec < Larray[Lbutton] + 2)
+	if (Larray[Lbutton]+2 < sec && sec < Larray[Lbutton] + 5)
 	{
 		pDoc->score++;
 		Lbutton++;

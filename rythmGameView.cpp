@@ -76,11 +76,8 @@ void CrythmGameView::OnDraw(CDC* pDC)
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
-	CClientDC dc(this);
 	CDC MemDC;
-
-	int c = 0;
-
+	
 	CBitmap bmpback,mainback,mainUI, * Oldbmp;
 	
 	bmpback.LoadBitmap(IDB_BACK);
@@ -88,7 +85,6 @@ void CrythmGameView::OnDraw(CDC* pDC)
 	mainUI.LoadBitmap(IDB_UITEST);
 
 	MemDC.CreateCompatibleDC(pDC);
-	
 	
 		if (backsw == 0) {
 			
@@ -105,7 +101,7 @@ void CrythmGameView::OnDraw(CDC* pDC)
 		
 		}
 		MemDC.SelectObject(&Oldbmp);
-	
+		
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
 	
 }
@@ -117,12 +113,12 @@ void CrythmGameView::DrawBitmap()
 	static int nImage = 0;
 	static int nimages = 0;
 	int move = 700;
+
+	CDC MemDC;
 	
 	// TODO: 여기에 구현 코드 추가.
-
 	if (backsw == 1) {
 	CClientDC dc(this);
-	CDC MemDC;
 	MemDC.CreateCompatibleDC(&dc);
 	CBitmap bmpman, seat, back,bmpback,Obf,Obl, bmpmanmask,Obstaclef,Obstaclel, * oldbmp;
 
@@ -135,6 +131,8 @@ void CrythmGameView::DrawBitmap()
 	Obstaclef.LoadBitmap(IDB_OBSTACLEF);
 	Obstaclel.LoadBitmap(IDB_OBSTACLEL);
 
+	
+
 	CString str, str2, str3;
 	str.Format(TEXT("초 : %d"), sec);
 	dc.TextOutW(350, 0, str);
@@ -142,14 +140,9 @@ void CrythmGameView::DrawBitmap()
 	dc.TextOutW(350, 30, str2);
 	
 	
-	oldbmp = (CBitmap*)MemDC.SelectObject(&back);
-	dc.BitBlt(0, 0, 1400, 350, &MemDC, 1400, 350, SRCCOPY);
 	oldbmp = (CBitmap*)MemDC.SelectObject(&seat);
 	dc.BitBlt(0, 300, 1000, 350, &MemDC, nimages * 5, 0, SRCCOPY);
-	/*
-	oldbmp = (CBitmap*)MemDC.SelectObject(&Obstacle);
-	dc.StretchBlt(0, 0, 100, 90, &MemDC, 100, 40, 250, 200, SRCCOPY);
-	*/
+	
 	
 	if (jump == 0) {
 	
@@ -192,9 +185,6 @@ void CrythmGameView::DrawBitmap()
 
 	}
 
-	
-	
-
 	nImage++;
 	nimages++;
 	if (nImage > 3) {
@@ -207,7 +197,7 @@ void CrythmGameView::DrawBitmap()
 	}
 	oldbmp = (CBitmap*)MemDC.SelectObject(&seat);
 	dc.BitBlt(0, 300, 1000, 350, &MemDC, nimages * 5, 0, SRCCOPY);
-	MemDC.SelectObject(&oldbmp);
+	MemDC.SelectObject(oldbmp);
 	}
 }
 
@@ -282,6 +272,7 @@ void CrythmGameView::OnTimer(UINT_PTR nIDEvent)
 		}
 		
 	}
+
 	CView::OnTimer(nIDEvent);
 }
 
